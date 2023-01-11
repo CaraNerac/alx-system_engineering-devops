@@ -1,1 +1,2 @@
-my 0x00 shell basics
+#!/bin/bash
+echo "current directory is `pwd`"
