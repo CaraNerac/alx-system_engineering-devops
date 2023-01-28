@@ -1,4 +1,4 @@
-global
+printf %s "global
     log 127.0.0.1 local0 notice
     maxconn 2000
     user haproxy
@@ -15,17 +15,16 @@ defaults
     timeout client  10000
     timeout server  10000
 
-frontend www-http
-   bind   0.0.0.0:80
-   reqadd X-Forwarded-Proto:\ http
-   default_backend www-backend
+frontend www-frontend
+   bind   *:80
+   mode http
+   http-request add-header x-forwarded-proto http
 
 frontend www-https
-   bind   0.0.0.0:443 ssl crt /etc/letsencrypt/live/www.onejackson.tech/all.pem
-   reqadd X-Forwarded-Proto:\ https
+   bind   *:443 ssl crt /etc/letsencrypt/live/www.webcaren.tech.pem
+   http-request add-header x-forwarded-proto https
    acl    letsencrypt-acl path_beg /.well-known/acme-challenge/
    use_backend letsencrypt-backend if letsencrypt-acl
-   default_backend www-backend
 
 backend www-backend
    balance  roundrobin
@@ -35,3 +34,5 @@ backend www-backend
 
 backend letsencrypt-backend
    server letsencrypt 127.0.0.1:54321
+"/etc/haproxy/haproxy.cfg
+sudo service haproxy start
